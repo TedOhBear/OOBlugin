@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
+using Dalamud.Plugin;
 
 namespace OOBlugin
 {
@@ -15,7 +17,8 @@ namespace OOBlugin
             public bool IsEnabled { get; private set; } = false;
             public bool IsValid => Address != nint.Zero;
             public string ReadBytes => !IsValid ? string.Empty : oldBytes.Aggregate(string.Empty, (current, b) => current + (b.ToString("X2") + " "));
-
+            public static IPluginLog? PluginLog { get; private set; }
+            public static void LogError(string message, Exception? exception = null) => PluginLog.Error(exception, message);
             public Replacer(nint addr, byte[] bytes, bool startEnabled = false)
             {
                 if (addr == nint.Zero) return;
@@ -33,7 +36,7 @@ namespace OOBlugin
             {
                 var addr = nint.Zero;
                 try { addr = DalamudApi.SigScanner.ScanModule(sig); }
-                catch { PluginLog.LogError($"Failed to find signature {sig}"); }
+                catch { LogError($"Failed to find signature {sig}"); }
                 if (addr == nint.Zero) return;
 
                 Address = addr;

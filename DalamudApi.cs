@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Dalamud.Game;
+using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Command;
+using Dalamud.Game.Gui.Toast;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 
@@ -19,7 +21,7 @@ namespace Dalamud
     {
         [PluginService]
         //[RequiredVersion("1.0")]
-        public static DalamudPluginInterface PluginInterface { get; private set; }
+        public static IDalamudPluginInterface PluginInterface { get; private set; }
 
         [PluginService]
         //[RequiredVersion("1.0")]
@@ -45,17 +47,23 @@ namespace Dalamud
         //[RequiredVersion("1.0")]
         public static ISigScanner SigScanner { get; private set; }
 
+        [PluginService]
+        public static IPluginLog PluginLog { get; private set; }
+
+        public static void LogError(string message, Exception exception = null) => PluginLog.Error(exception, message);
+
         private static PluginCommandManager<IDalamudPlugin> pluginCommandManager;
 
         public DalamudApi() { }
 
         public DalamudApi(IDalamudPlugin plugin) => pluginCommandManager ??= new(plugin);
+        public static void Initialize(IDalamudPlugin plugin, IDalamudPluginInterface pluginInterface) => _ = new DalamudApi(plugin, pluginInterface);
 
-        public DalamudApi(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface)
+        public DalamudApi(IDalamudPlugin plugin, IDalamudPluginInterface pluginInterface)
         {
             if (!pluginInterface.Inject(this))
             {
-                PluginLog.LogError("Failed loading DalamudApi!");
+                LogError("Failed loading DalamudApi!");
                 return;
             }
 
@@ -74,7 +82,7 @@ namespace Dalamud
             throw new InvalidOperationException();
         }
 
-        public static void Initialize(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface) => _ = new DalamudApi(plugin, pluginInterface);
+        //public static void Initialize(IDalamudPlugin plugin, IDalamudPluginInterface pluginInterface) => _ = new DalamudApi(plugin, pluginInterface);
 
         public static void Dispose() => pluginCommandManager?.Dispose();
     }
@@ -110,7 +118,7 @@ namespace Dalamud
 
         private IEnumerable<(string, CommandInfo)> GetCommandInfoTuple(MethodInfo method)
         {
-            var handlerDelegate = (CommandInfo.HandlerDelegate)Delegate.CreateDelegate(typeof(CommandInfo.HandlerDelegate), plugin, method);
+            var handlerDelegate = (IReadOnlyCommandInfo.HandlerDelegate)Delegate.CreateDelegate(typeof(IReadOnlyCommandInfo.HandlerDelegate), plugin, method);
 
             var command = handlerDelegate.Method.GetCustomAttribute<CommandAttribute>();
             var aliases = handlerDelegate.Method.GetCustomAttribute<AliasesAttribute>();

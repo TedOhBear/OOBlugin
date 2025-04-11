@@ -37,7 +37,7 @@ namespace OOBlugin
         private static Dictionary<uint, string> usables;
         private static float walkTime = 0;
 
-        public OOBlugin(DalamudPluginInterface pluginInterface)
+        public OOBlugin(IDalamudPluginInterface pluginInterface)
         {
             Plugin = this;
             DalamudApi.Initialize(this, pluginInterface);
@@ -49,14 +49,14 @@ namespace OOBlugin
 
             Game.Initialize();
 
-            usables = DalamudApi.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Item>().Where(i => i.ItemAction.Row > 0).ToDictionary(i => i.RowId, i => i.Name.ToString().ToLower())
-                .Concat(DalamudApi.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.EventItem>().Where(i => i.Action.Row > 0).ToDictionary(i => i.RowId, i => i.Name.ToString().ToLower()))
+            usables = DalamudApi.DataManager.GetExcelSheet<Lumina.Excel.Sheets.Item>().Where(i => i.ItemAction.RowId > 0).ToDictionary(i => i.RowId, i => i.Name.ToString().ToLower())
+                .Concat(DalamudApi.DataManager.GetExcelSheet<Lumina.Excel.Sheets.EventItem>().Where(i => i.Action.RowId > 0).ToDictionary(i => i.RowId, i => i.Name.ToString().ToLower()))
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
 
             pluginReady = true;
         }
 
-        [Command("/useitem")]
+        /*[Command("/useitem")]
         [HelpMessage("Uses an item by name or ID.")]
         private void OnUseItem(string command, string argument)
         {
@@ -83,7 +83,7 @@ namespace OOBlugin
                 Game.UseItem(Game.itemContextMenuAgent, id, 9999, 0, 0);
             else
                 PrintError("Invalid item.");
-        }
+        }*/
 
         [Command("/freezegame")]
         [Aliases("/frz")]
@@ -137,7 +137,7 @@ namespace OOBlugin
             }
         }
 
-        [Command("/qexec")]
+        /*[Command("/qexec")]
         [HelpMessage("Executes all commands in a single frame. Usage: \"/qexec /echo Hello\" > \"/qexec /echo there!\" > \"/qexec\".")]
         private void OnQuickExecute(string command, string argument)
         {
@@ -151,7 +151,7 @@ namespace OOBlugin
             {
                 quickExecuteQueue.Add(argument);
             }
-        }
+        }*/
 
         [Command("/sendkey")]
         [HelpMessage("Sends a key to the game using virtual key code or virtual key name." +
@@ -201,7 +201,7 @@ namespace OOBlugin
                 PrintError("Invalid key.");
         }
 
-        [Command("/walk")]
+        /*[Command("/walk")]
         [HelpMessage("Toggles RP walk, alternatively, you can specify an amount of time in seconds to walk for.")]
         private void OnWalk(string command, string argument)
         {
@@ -209,7 +209,7 @@ namespace OOBlugin
                 Game.IsWalking ^= true;
             else
                 Game.IsWalking = true;
-        }
+        }*/
 
         [Command("/ng+t")]
         [HelpMessage("Toggles New Game+.")]

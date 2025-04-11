@@ -82,7 +82,7 @@ namespace OOBlugin
 
         public static void Initialize()
         {
-            try
+            /*try
             {
                 uiModule = DalamudApi.GameGui.GetUIModule();
                 ProcessChatBox = Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(DalamudApi.SigScanner.ScanText("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9"));
@@ -91,15 +91,15 @@ namespace OOBlugin
 
             try { walkingBoolPtr = DalamudApi.SigScanner.GetStaticAddressFromSig("40 38 35 ?? ?? ?? ?? 75 2D"); } // also found around g_PlayerMoveController+523
             catch { PrintError("Failed to load /walk"); }
-
+            */
             try
             {
-                var agentModule = Framework.Instance()->GetUiModule()->GetAgentModule();
+                var agentModule = Framework.Instance()->GetUIModule()->GetAgentModule();
 
                 try
                 {
-                    GetUnknownNGPPtr = Marshal.GetDelegateForFunctionPointer<GetUnknownNGPPtrDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? 80 7B 29 01"));
-                    NewGamePlusAction = Marshal.GetDelegateForFunctionPointer<NewGamePlusActionDelegate>(DalamudApi.SigScanner.ScanText("48 89 5C 24 08 48 89 74 24 18 57 48 83 EC 30 48 8B 02 48 8B DA 48 8B F9 48 8D 54 24 48 48 8B CB"));
+                    GetUnknownNGPPtr = Marshal.GetDelegateForFunctionPointer<GetUnknownNGPPtrDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? 66 39 78 08"));
+                    NewGamePlusAction = Marshal.GetDelegateForFunctionPointer<NewGamePlusActionDelegate>(DalamudApi.SigScanner.ScanText("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 30 48 8B 02 48 8B F2"));
                     newGameUIPtr = (nint)agentModule->GetAgentByInternalId(AgentId.QuestRedo) + 0xD0;
                 }
                 catch { PrintError("Failed to load /ng+t"); }
@@ -113,17 +113,17 @@ namespace OOBlugin
 
                 try
                 {
-                    OpenAbandonDuty = Marshal.GetDelegateForFunctionPointer<OpenAbandonDutyDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? EB 90 48 8B CB"));
+                    OpenAbandonDuty = Marshal.GetDelegateForFunctionPointer<OpenAbandonDutyDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? EB 90 48 8B 4B 10"));
                     contentsFinderMenuAgent = (nint)agentModule->GetAgentByInternalId(AgentId.ContentsFinderMenu);
                 }
                 catch { PrintError("Failed to load /leaveduty"); }
 
-                try
+                /*try
                 {
                     UseItem = Marshal.GetDelegateForFunctionPointer<UseItemDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 89 7C 24 38"));
                     itemContextMenuAgent = (nint)agentModule->GetAgentByInternalId(AgentId.InventoryContext);
                 }
-                catch { PrintError("Failed to load /useitem"); }
+                catch { PrintError("Failed to load /useitem"); }*/
             }
             catch { PrintError("Failed to get agent module"); }
 
