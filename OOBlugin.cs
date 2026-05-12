@@ -56,35 +56,6 @@ namespace OOBlugin
             pluginReady = true;
         }
 
-        /*[Command("/useitem")]
-        [HelpMessage("Uses an item by name or ID.")]
-        private void OnUseItem(string command, string argument)
-        {
-            if (usables == null) return;
-
-            if (!uint.TryParse(argument, out var id))
-            {
-                if (!string.IsNullOrWhiteSpace(argument))
-                {
-                    var name = argument.Replace("\uE03C", ""); // Remove HQ Symbol
-                    var useHQ = argument != name;
-                    name = name.ToLower().Trim(' ');
-                    try { id = usables.First(i => i.Value == name).Key + (uint)(useHQ ? 1_000_000 : 0); }
-                    catch { }
-                }
-            }
-            else
-            {
-                if (!usables.ContainsKey(id is >= 1_000_000 and < 2_000_000 ? id - 1_000_000 : id))
-                    id = 0;
-            }
-
-            if (id > 0)
-                Game.UseItem(Game.itemContextMenuAgent, id, 9999, 0, 0);
-            else
-                PrintError("Invalid item.");
-        }*/
-
         [Command("/freezegame")]
         [Aliases("/frz")]
         [HelpMessage("Freezes the game for the amount of time specified in seconds, up to 60. Defaults to 0.5.")]
@@ -93,32 +64,6 @@ namespace OOBlugin
             if (!float.TryParse(argument, out var time))
                 time = 0.5f;
             Thread.Sleep((int)(Math.Min(time, 60) * 1000));
-        }
-
-        [Command("/proc")]
-        [HelpMessage("Starts a process at the specified path.")]
-        private void OnProc(string command, string argument) => StartProcess(argument, false);
-
-        [Command("/procadmin")]
-        [HelpMessage("Starts a process at the specified path as admin.")]
-        private void OnProcAdmin(string command, string argument) => StartProcess(argument, true);
-
-        private void StartProcess(string argument, bool admin)
-        {
-            if (Regex.IsMatch(argument, @"^.:\\"))
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = argument,
-                    WorkingDirectory = Path.GetDirectoryName(argument)!,
-                    UseShellExecute = true,
-                    Verb = admin ? "runas" : string.Empty
-                });
-            }
-            else
-            {
-                PrintError("Command must start with \"?:\\\" where ? is a drive letter.");
-            }
         }
 
         [Command("/capfps")]
@@ -137,81 +82,7 @@ namespace OOBlugin
             }
         }
 
-        /*[Command("/qexec")]
-        [HelpMessage("Executes all commands in a single frame. Usage: \"/qexec /echo Hello\" > \"/qexec /echo there!\" > \"/qexec\".")]
-        private void OnQuickExecute(string command, string argument)
-        {
-            if (string.IsNullOrEmpty(argument))
-            {
-                foreach (var cmd in quickExecuteQueue)
-                    ExecuteCommand(cmd);
-                quickExecuteQueue.Clear();
-            }
-            else
-            {
-                quickExecuteQueue.Add(argument);
-            }
-        }*/
-
-        [Command("/sendkey")]
-        [HelpMessage("Sends a key to the game using virtual key code or virtual key name." +
-            " Example: \"/sendkey 96\" to send numpad 0, \"/sendkey +D1\" to send shift + 1, \"/sendkey ^numpad5\" to send control + numpad 5, \"/sendkey %%OemMinus\" to send alt + minus." +
-            " Use \"/sendkey help\" for all possible values.")]
-        private void OnSendKey(string command, string argument)
-        {
-            var reg = Regex.Match(argument, @"^([+^%]*)(.+)");
-            if (!reg.Success) return;
-
-            if (argument == "help")
-            {
-                foreach (var name in Enum.GetNames(typeof(Keys)))
-                {
-                    var vk = (int)Enum.Parse(typeof(Keys), name);
-                    if (Game.GetKeyStateIndex(vk) > 0)
-                        PrintEcho($"{name} = {vk}");
-                }
-                return;
-            }
-
-            sentKey = true;
-            var mods = reg.Groups[1].Value;
-            var keyStr = reg.Groups[2].Value;
-            if (mods.Contains("+"))
-            {
-                sentShift = true;
-                Game.SendKeyHold(Keys.ShiftKey);
-            }
-
-            if (mods.Contains("^"))
-            {
-                sentCtrl = true;
-                Game.SendKeyHold(Keys.ControlKey);
-            }
-
-            if (mods.Contains("%"))
-            {
-                sentAlt = true;
-                Game.SendKeyHold(Keys.Menu);
-            }
-
-            if (!byte.TryParse(keyStr, out var key) && Enum.TryParse(typeof(Keys), keyStr, true, out var keyEnum))
-                key = (byte)(int)keyEnum;
-
-            if (!Game.SendKey(key))
-                PrintError("Invalid key.");
-        }
-
-        /*[Command("/walk")]
-        [HelpMessage("Toggles RP walk, alternatively, you can specify an amount of time in seconds to walk for.")]
-        private void OnWalk(string command, string argument)
-        {
-            if (!float.TryParse(argument, out walkTime))
-                Game.IsWalking ^= true;
-            else
-                Game.IsWalking = true;
-        }*/
-
-        [Command("/ng+t")]
+        /*[Command("/ng+t")] send me the updated sig kthx
         [HelpMessage("Toggles New Game+.")]
         private unsafe void OnNGPT(string command, string argument)
         {
@@ -220,7 +91,7 @@ namespace OOBlugin
 
             *(byte*)(Game.newGameUIPtr + 0x8) ^= 1;
             Game.NewGamePlusAction(Game.GetUnknownNGPPtr(), Game.newGameUIPtr);
-        }
+        }*/
 
         [Command("/doemote")]
         [HelpMessage("Performs the specified emote by number.")]

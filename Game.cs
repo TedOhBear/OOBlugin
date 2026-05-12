@@ -96,13 +96,13 @@ namespace OOBlugin
             {
                 var agentModule = Framework.Instance()->GetUIModule()->GetAgentModule();
 
-                try
+                /*try
                 {
                     GetUnknownNGPPtr = Marshal.GetDelegateForFunctionPointer<GetUnknownNGPPtrDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? 66 39 78 08"));
                     NewGamePlusAction = Marshal.GetDelegateForFunctionPointer<NewGamePlusActionDelegate>(DalamudApi.SigScanner.ScanText("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 30 48 8B 02 48 8B F2"));
                     newGameUIPtr = (nint)agentModule->GetAgentByInternalId(AgentId.QuestRedo) + 0xD0;
                 }
-                catch { PrintError("Failed to load /ng+t"); }
+                catch { PrintError("Failed to load /ng+t"); }*/
 
                 try
                 {
@@ -126,13 +126,6 @@ namespace OOBlugin
                 catch { PrintError("Failed to load /useitem"); }*/
             }
             catch { PrintError("Failed to get agent module"); }
-
-            try
-            {
-                keyStates = (int*)DalamudApi.SigScanner.GetStaticAddressFromSig("4C 8D 05 ?? ?? ?? ?? 44 8B 0D"); // 4C 8D 05 ?? ?? ?? ?? 44 8B 1D
-                keyStateIndexArray = (byte*)(DalamudApi.SigScanner.Module.BaseAddress + *(int*)(DalamudApi.SigScanner.ScanModule("0F B6 94 33 ?? ?? ?? ?? 84 D2") + 4));
-            }
-            catch { PrintError("Failed to load /sendkey!"); }
         }
 
         public static void Dispose()
