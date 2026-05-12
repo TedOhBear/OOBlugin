@@ -96,13 +96,13 @@ namespace OOBlugin
             {
                 var agentModule = Framework.Instance()->GetUIModule()->GetAgentModule();
 
-                try
+                /*try
                 {
                     GetUnknownNGPPtr = Marshal.GetDelegateForFunctionPointer<GetUnknownNGPPtrDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? 66 39 78 08"));
                     NewGamePlusAction = Marshal.GetDelegateForFunctionPointer<NewGamePlusActionDelegate>(DalamudApi.SigScanner.ScanText("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 30 48 8B 02 48 8B F2"));
                     newGameUIPtr = (nint)agentModule->GetAgentByInternalId(AgentId.QuestRedo) + 0xD0;
                 }
-                catch { PrintError("Failed to load /ng+t"); }
+                catch { PrintError("Failed to load /ng+t"); }*/
 
                 try
                 {
@@ -117,13 +117,6 @@ namespace OOBlugin
                     contentsFinderMenuAgent = (nint)agentModule->GetAgentByInternalId(AgentId.ContentsFinderMenu);
                 }
                 catch { PrintError("Failed to load /leaveduty"); }
-
-                /*try
-                {
-                    UseItem = Marshal.GetDelegateForFunctionPointer<UseItemDelegate>(DalamudApi.SigScanner.ScanText("E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 89 7C 24 38"));
-                    itemContextMenuAgent = (nint)agentModule->GetAgentByInternalId(AgentId.InventoryContext);
-                }
-                catch { PrintError("Failed to load /useitem"); }*/
             }
             catch { PrintError("Failed to get agent module"); }
 
